@@ -1,0 +1,92 @@
+#![allow(unused_imports)]
+#![allow(unused_macros)]
+#![allow(unused_variables)]
+#![allow(unused_mut)]
+
+use std::io::{stdin, stdout, BufWriter, Write};
+use std::prelude::v1::*;
+use std::str::{FromStr, SplitWhitespace};
+
+struct Scanner {
+    buffer: SplitWhitespace<'static>,
+    leaked: *mut str,
+}
+impl Scanner {
+    fn next<T: std::str::FromStr>(&mut self) -> T {
+        self.next_raw().parse().ok().expect("Failed parse")
+    }
+
+    fn next_raw<'a>(&'a mut self) -> &'a str {
+        loop {
+            if let Some(token) = self.buffer.next() {
+                return token;
+            }
+            let mut input = unsafe { String::from(Box::from_raw(self.leaked)) };
+            input.clear();
+            stdin().read_line(&mut input).expect("Failed read");
+            self.leaked = Box::into_raw(input.into_boxed_str());
+            let v = unsafe { &*self.leaked };
+            self.buffer = v.split_whitespace();
+        }
+    }
+}
+impl Default for Scanner {
+    fn default() -> Self {
+        let input = String::new();
+        let leaked = Box::into_raw(input.into_boxed_str());
+        let v = unsafe { &*leaked };
+        let buffer = v.split_whitespace();
+        Self { buffer, leaked }
+    }
+}
+impl Drop for Scanner {
+    fn drop(&mut self) {
+        let unleak = unsafe { Box::from_raw(self.leaked) };
+    }
+}
+
+fn main() {
+    let mut scanner = Scanner::default();
+    let writer = &mut BufWriter::new(stdout());
+    macro_rules! sayln {
+        ($($arg:tt)*) => {
+            writeln!(writer, $($arg)*).unwrap();
+        };
+    }
+    macro_rules! say {
+        ($($arg:tt)*) => {
+            write!(writer, $($arg)*).unwrap();
+        };
+    }
+    macro_rules! scan {
+        ($i:ident) => {
+            scanner.next::<$i>()
+        };
+        (&str) => {
+            scanner.next_raw()
+        };
+        () => {
+            scanner.next()
+        };
+    }
+
+    use std::collections::BinaryHeap;
+    for _ in 0..scan!(u32) {
+        let mut a = (0..scan!(u32)).map(|_| scan!(usize)).collect::<Vec<_>>();
+        a.sort();
+        let mut a = a.into_iter().skip(1);
+        let mut ve = BinaryHeap::new();
+        ve.push(std::cmp::Reverse(1));
+        for e in a {
+            // dbg!(&ve);
+            let i = *ve.peek().unwrap();
+            if e > i.0 {
+                ve.pop();
+                ve.push(std::cmp::Reverse(i.0 + 1));
+            } else {
+                ve.push(std::cmp::Reverse(1));
+            }
+        }
+        sayln!("{}", ve.len());
+    }
+}
