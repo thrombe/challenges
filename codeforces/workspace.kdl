@@ -1,0 +1,91 @@
+
+// default_shell "cached-nix-shell"
+
+layout {
+    // 'base' swap layout is exactly whatever you define in the actual layout stuff
+    // first one takes precidence
+    swap_tiled_layout name="stack" min_panes=2 {
+        tab {
+            pane stacked=true {
+                pane
+                pane
+            }
+        }
+    }
+    swap_tiled_layout name="no stack" min_panes=2 {
+        tab {
+            pane
+        }
+    }
+
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    pane_template name="nix" {
+        command "nix"
+        args "develop"
+    }
+
+    tab name="git / broot" stacked=true {
+        pane stacked=true {
+            pane start_suspended=true name="broot" {
+                command "broot"
+            }
+            pane start_suspended=true name="gitui" {
+                command "gitui"
+            }
+        }
+    }
+    tab name="commands" {
+        pane stacked=true {
+            nix start_suspended=true name="new contest" {
+                args "develop" "-c" "zsh" "-ic" "read contest; ./new_contest.sh $contest" 
+            }
+            nix start_suspended=true name="new problem python" {
+                args "develop" "-c" "zsh" "-ic" "read problem; ./new_py.sh $problem" 
+            }
+            nix start_suspended=true name="run python" {
+                args "develop" "-c" "./run_py.sh"
+            }
+            nix start_suspended=true name="new problem rust" {
+                args "develop" "-c" "zsh" "-ic" "read problem; ./new_rs.sh $problem" 
+            }
+            nix start_suspended=true name="run rust" {
+                args "develop" "-c" "./run_rs.sh"
+            }
+        }
+    }
+    // tab name="commands" {
+    //     pane stacked=true {
+    //         nix start_suspended=true name="new contest" {
+    //             args "--command" "read contest; mkdir $contest && rm contest && ln -s $(realpath $contest) contest && ls -l contest"
+    //         }
+    //         nix start_suspended=true name="symlink contest" {
+    //             args "--command" "rm contest; ln -s $(fd -a -t d | fzf) contest && ls -l contest"
+    //         }
+    //         nix start_suspended=true name="symlink problem" {
+    //             args "--command" "rm p.py; ln -s $(cd contest && fd -a -t f -e py | fzf) p.py && ls -l p.py"
+    //         }
+    //         nix start_suspended=true name="run" {
+    //             args "--command" "cat input.txt | python p.py"
+    //         }
+    //     }
+    // }
+    tab focus=true name="helix" {
+        nix name="helix" {
+            args "develop" "-c" "hx" "./input.txt" "./p.py" "./p.rs"
+        }
+    }
+    tab name="shell" {
+        pane stacked=true {
+            nix name="shell"
+        }
+    }
+}

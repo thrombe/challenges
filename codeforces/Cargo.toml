@@ -1,0 +1,5 @@
+[package]
+name = "codef"
+version = "0.1.0"
+authors = ["thrombe <yash.n.thombare620@gmail.com>"]
+edition = "2021"
