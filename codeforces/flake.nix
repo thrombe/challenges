@@ -3,25 +3,35 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    unstable-nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, unstable-nixpkgs }:
-  let
-    system = "x86_64-linux";
+  outputs = inputs @ {...}:
+    inputs.flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+      };
+      unstable = import inputs.nixpkgs-unstable {
+        inherit system;
+      };
+    in {
+      devShells.default = pkgs.mkShell {
+        nativeBuildInputs = with pkgs; [
+          # rustup
+          unstable.cargo
+          unstable.rustc
+          unstable.rust-analyzer
+          unstable.clippy
 
-    pkgs = import nixpkgs {
-      inherit system;
-    };
-    unstable = import unstable-nixpkgs {
-      inherit system;
-      # - [Overlays | NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/nixpkgs/overlays)
-      overlays = [
-        (self: super: {})
-      ];
-    };
-  in
-  {
-    devShells."${system}".default = (import ./shell.nix { inherit pkgs unstable; });
-  };
+          (python39.withPackages (ps: []))
+          python310Packages.python-lsp-server
+          python310Packages.ruff-lsp # python linter
+          python310Packages.black # python formatter
+        ];
+        shellHook = ''
+          export RUST_BACKTRACE="1"
+        '';
+      };
+    });
 }
