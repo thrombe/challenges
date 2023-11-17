@@ -23,6 +23,7 @@
           unstable.rustc
           unstable.rust-analyzer
           unstable.clippy
+          unstable.rustfmt
 
           (python39.withPackages (ps: []))
           python310Packages.python-lsp-server
