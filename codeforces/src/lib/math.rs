@@ -51,33 +51,68 @@ where T: Into<usize> + From<usize> + std::ops::Mul + std::ops::Div + Copy
     primes
 }
 
-// (prime, power)
-fn prime_factorisation<T>(mut n: T) -> Vec<(T, T)>
-where T: std::ops::SubAssign + std::ops::AddAssign + std::ops::DivAssign + std::ops::Rem<Output=T> + From<usize> + std::cmp::PartialEq + std::cmp::PartialOrd + Copy
+// returns an array where arr[i] returns the greatest prime factor of i
+// this can be used to quickly do prime factorisation
+fn factorisation_sieve<T>(n: T) -> Vec<usize>
+    where T: std::ops::SubAssign + std::ops::AddAssign + std::ops::DivAssign + std::ops::Rem<Output=T> + From<usize> + Into<usize> + std::cmp::PartialEq + std::cmp::PartialOrd + Copy
 {
-    let mut factorisation = vec![];
-    let mut prime: T = 3.into();
-    let mut power: T = 0.into();
-
-    // taking care of 2 in seperate loop to prevent an if condition in the other loop (2 is only even prime)
-    while n%2.into() == 0.into() {
-        n /= 2.into();
-        power += 1.into();
-    }
-    if power != 0.into() {
-        factorisation.push((2.into(), power));
-    }
-
-    while n > 1.into() {
-        power = 0.into();
-        while n % prime == 0.into() {
-            n /= prime;
-            power += 1.into();
+    let mut sieve = vec![0;n.into()+1];
+    sieve[0] = 1;
+    sieve[1] = 1;
+    for i in 2..=n.into() {
+        if sieve[i] == 0 {
+            let mut j = i;
+            while j <= n.into() {
+                // if sieve[j] == 0 { // this check will give the smallest factor in sieve
+                    sieve[j] = i;
+                // }
+                j += i;
+            }
         }
-        if power != 0.into() {
-            factorisation.push((prime, power));
+    }
+    sieve
+}
+
+// returns an array where arr[i] returns the smallest prime factor of i
+// this can be used to quickly do prime factorisation
+fn factorisation_sieve_smallest<T>(n: T) -> Vec<usize>
+    where T: std::ops::SubAssign + std::ops::AddAssign + std::ops::DivAssign + std::ops::Rem<Output=T> + From<usize> + Into<usize> + std::cmp::PartialEq + std::cmp::PartialOrd + Copy
+{
+    let mut sieve = vec![0;n.into()+1];
+    sieve[0] = 1;
+    sieve[1] = 1;
+    for i in 2..=n.into() {
+        if sieve[i] == 0 {
+            let mut j = i;
+            while j <= n.into() {
+                if sieve[j] == 0 { // this check will give the smallest factor in sieve
+                    sieve[j] = i;
+                }
+                j += i;
+            }
         }
-        prime += 2.into();
+    }
+    sieve
+}
+
+// (prime, power)
+fn prime_factorisation(n: usize) -> std::collections::HashMap<usize, usize> {
+    let sieve = factorisation_sieve(n);
+    prime_factorisation_with_factorisation_sieve(n, sieve)
+}
+
+// (prime, power)
+fn prime_factorisation_with_factorisation_sieve(mut n: usize, sieve: Vec<usize>) -> std::collections::HashMap<usize, usize> {
+    let mut factorisation = std::collections::HashMap::new();
+    
+    while n > 1 {
+        let factor = sieve[n];
+        if let Some(m) = factorisation.get_mut(&factor) {
+            *m += 1;
+        } else {
+            factorisation.insert(factor, 1);
+        }
+        n /= factor;
     }
     factorisation
 }
@@ -87,8 +122,8 @@ where T: Into<u64>
 {
     let n = n.into();
     // the smallest power of 2 greater than or equal to n
-    let power = 64 
+    
+    64 
         + if n.count_ones() > 1 || n < 2 {1} else {0} // this in the middle as if n == 0, it still works
-        - n.leading_zeros()-1;
-    power
+        - n.leading_zeros()-1
 }
