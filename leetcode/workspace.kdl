@@ -1,0 +1,78 @@
+layout {
+    // 'base' swap layout is exactly whatever you define in the actual layout stuff
+    // first one takes precidence
+    swap_tiled_layout name="stack" min_panes=2 {
+        tab {
+            pane stacked=true {
+                pane
+                pane
+            }
+        }
+    }
+    swap_tiled_layout name="no stack" min_panes=2 {
+        tab {
+            pane
+        }
+    }
+
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="git / broot" stacked=true {
+        pane stacked=true {
+            pane start_suspended=true name="gitui" {
+                command "gitui"
+            }
+            pane start_suspended=true name="broot" {
+                command "broot"
+            }
+        }
+    }
+    tab name="commands" {
+        pane stacked=true {
+            pane start_suspended=true name="new problem" {
+                command "zsh"
+                args "-ic" "read problem; ./new_problem.sh $problem" 
+            }
+            pane start_suspended=true name="problem python" {
+                command "zsh"
+                args "-ic" "./new_py.sh" 
+            }
+            pane start_suspended=true name="run python" {
+                command "./run_py.sh"
+            }
+            pane start_suspended=true name="problem rust" {
+                command "zsh"
+                args "-ic" "./new_rs.sh" 
+            }
+            pane start_suspended=true name="run rust" {
+                command "./run_rs.sh"
+            }
+            pane start_suspended=true name="problem cpp" {
+                command "zsh"
+                args "-ic" "./new_cpp.sh" 
+            }
+            pane start_suspended=true name="run cpp" {
+                command "./run_cpp.sh"
+            }
+        }
+    }
+    tab focus=true name="helix" {
+        pane name="helix" {
+            command "hx"
+            args "./input.txt" "./p.py" "./p.rs" "./problem/p.cpp"
+        }
+    }
+    tab name="shell" {
+        pane stacked=true {
+            pane name="shell"
+        }
+    }
+}

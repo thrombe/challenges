@@ -1,0 +1,6 @@
+
+[[language]]
+name = "cpp"
+language-servers = [ ]
+formatter = { command = "clang-format", args = [] }
+
