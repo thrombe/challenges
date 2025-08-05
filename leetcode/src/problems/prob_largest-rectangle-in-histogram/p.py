@@ -4,24 +4,36 @@ import os
 
 class Solution:
     def largestRectangleArea(self, heights: List[int]) -> int:
+        left = []
+        stack = []
+        for i in range(len(heights)):
+            while len(stack) > 0 and heights[i] <= heights[stack[-1]]:
+                stack.pop()
+
+            if len(stack) > 0:
+                left.append(stack[-1])
+            else:
+                left.append(-1)
+            stack.append(i)
+
+        right = []
+        stack = []
+        for i in range(len(heights)):
+            j = len(heights) - i - 1
+            while len(stack) > 0 and heights[j] <= heights[stack[-1]]:
+                stack.pop()
+
+            if len(stack) > 0:
+                right.append(stack[-1])
+            else:
+                right.append(len(heights))
+            stack.append(j)
+        right = right[::-1]
+
         ans = 0
         for i in range(len(heights)):
             h = heights[i]
-
-            left = i
-            for j in range(i, -1, -1):
-                left = j
-                if heights[j] < h:
-                    left = j + 1
-                    break
-            right = i
-            for j in range(i, len(heights)):
-                right = j
-                if heights[j] < h:
-                    right = j - 1
-                    break
-
-            ans = max(ans, (right - left + 1) * h)
+            ans = max(ans, (right[i] - left[i] - 1) * h)
 
         return ans
 
