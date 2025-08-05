@@ -1,3 +1,4 @@
+mod prob_rotate-list;
 mod prob_largest-rectangle-in-histogram;
 mod prob_decode-string;
 mod prob_binary-tree-level-order-traversal;
