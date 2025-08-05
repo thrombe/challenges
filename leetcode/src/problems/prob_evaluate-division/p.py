@@ -35,27 +35,23 @@ class Solution:
                 ans.append(1)
                 return
 
-            val = 1
-            var = a
-            print(f"\nsolving {a}/{b}")
-            while var != b:
-                if var not in subs:
+            stack = [[1, a]]
+            explored = set()
+            while True:
+                if len(stack) == 0:
                     ans.append(-1)
-                    return
+                    break
+                val, var = stack.pop()
+                if var == b:
+                    ans.append(val)
+                    break
 
                 sub = subs[var]
-                subs[var] = sub[:-1] + sub[-1:]
-                if len(subs[var]) == 0:
-                    subs.pop(var)
-
-                v, s = sub[random.randrange(0, len(sub))]
-                print(f"{var} -> {v} * {s}")
-                val *= v
-                var = s
-                print(f"{var} * {val} = {b}")
-
-            ans.append(val)
-            return
+                for v, s in sub:
+                    edge = (val, v, var, s)
+                    if edge not in explored:
+                        explored.add(edge)
+                        stack.append([val * v, s])
 
         for [a, b] in queries:
             subs = copy.deepcopy(_subs)
