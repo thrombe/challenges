@@ -2,8 +2,7 @@
   description = "yaaaaaaaaaaaaaaaaaaaaa";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -12,23 +11,21 @@
       pkgs = import inputs.nixpkgs {
         inherit system;
       };
-      unstable = import inputs.nixpkgs-unstable {
-        inherit system;
-      };
     in {
       devShells.default = pkgs.mkShell {
         nativeBuildInputs = with pkgs; [
           # rustup
-          unstable.cargo
-          unstable.rustc
-          unstable.rust-analyzer
-          unstable.clippy
-          unstable.rustfmt
+          cargo
+          rustc
+          rust-analyzer
+          clippy
+          rustfmt
 
-          (python39.withPackages (ps: []))
-          python310Packages.python-lsp-server
-          python310Packages.ruff-lsp # python linter
-          python310Packages.black # python formatter
+          python312
+          pyright # lsp (js)
+          # basedpyright # lsp (js) (fork of pyright)
+          ruff # python linter, formatter (rust)
+          uv # python package manager, virtualenv (rust)
 
           # - [use clangd C/C++ LSP in any project](https://www.reddit.com/r/neovim/comments/17rhvtl/guide_how_to_use_clangd_cc_lsp_in_any_project/)
           cmake
@@ -40,6 +37,8 @@
           # Do not use the clangd from this package as it does not work correctly with
           # stdlib headers.
           # llvmPackages_16.libstdcxxClang
+
+          clang
         ];
         shellHook = ''
           export RUST_BACKTRACE="1"
