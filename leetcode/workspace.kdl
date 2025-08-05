@@ -25,13 +25,10 @@ layout {
         }
     }
 
-    tab name="git / broot" stacked=true {
+    tab name="jjui" stacked=true {
         pane stacked=true {
-            pane start_suspended=true name="gitui" {
-                command "gitui"
-            }
-            pane start_suspended=true name="broot" {
-                command "broot"
+            pane start_suspended=true name="jjui" {
+                command "jjui"
             }
         }
     }
