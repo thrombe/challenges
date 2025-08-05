@@ -1,3 +1,4 @@
+mod prob_decode-string;
 mod prob_binary-tree-level-order-traversal;
 mod prob_subarray-sum-equals-k;
 mod prob_count-zero-request-servers;
