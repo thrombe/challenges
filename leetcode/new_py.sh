@@ -4,7 +4,7 @@ name="p"
 if [ -f "./problem/$name.py" ]; then
     echo "$name.py exists."
 else 
-    touch "./problem/$name.py"
+    cp ./src/lib/template_v0.py "./problem/$name.py"
     touch "./problem/$name.txt"
 fi
 

@@ -42,6 +42,7 @@
         ];
         shellHook = ''
           export RUST_BACKTRACE="1"
+          export SOLVING_LOCALLY=1
         '';
         LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
       };
