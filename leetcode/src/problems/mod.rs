@@ -1,3 +1,4 @@
+mod prob_combinations;
 mod prob_rotate-list;
 mod prob_largest-rectangle-in-histogram;
 mod prob_decode-string;
