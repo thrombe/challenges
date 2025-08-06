@@ -7,34 +7,21 @@ class Solution:
     def eventualSafeNodes(self, graph: List[List[int]]) -> List[int]:
         n = len(graph)
 
-        back = [[] for _ in range(n)]
-        for from_, edges in enumerate(graph):
-            for to in edges:
-                back[to].append(from_)
-
         poisoned = [False] * n
         visited = [False] * n
-        stack = []
 
         def do(node):
             if poisoned[node]:
-                return
+                return True
             if visited[node]:
-                stack.append(node)
-                while len(stack) > 0:
-                    node = stack.pop()
-                    if poisoned[node]:
-                        continue
-                    poisoned[node] = True
-                    for other in back[node]:
-                        if not poisoned[other]:
-                            stack.append(other)
-                return
+                return False
 
             visited[node] = True
+            poisoned[node] = True
             for to in graph[node]:
-                do(to)
-            visited[node] = False
+                if do(to):
+                    return True
+            poisoned[node] = False
 
         for i in range(n):
             if poisoned[i]:
