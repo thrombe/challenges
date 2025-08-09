@@ -1,3 +1,4 @@
+mod prob_pacific-atlantic-water-flow;
 mod prob_jump-game;
 mod prob_validate-binary-search-tree;
 mod prob_sudoku-solver;
