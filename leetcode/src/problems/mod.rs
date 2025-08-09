@@ -1,3 +1,4 @@
+mod prob_distribute-candies-among-children-ii;
 mod prob_find-eventual-safe-states;
 mod prob_combinations;
 mod prob_rotate-list;
