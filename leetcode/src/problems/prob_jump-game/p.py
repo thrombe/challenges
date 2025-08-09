@@ -4,19 +4,16 @@ import os
 
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
-        canreach = [False] * len(nums)
-        canreach[0] = True
-        for i, n in enumerate(nums):
-            if not canreach[i]:
-                continue
-            for j in range(i + 1, min(i + n + 1, len(nums))):
-                canreach[j] = True
-            if canreach[-1]:
-                return True
-        return canreach[-1]
+        jump = nums[0]
+        for n in nums[1:]:
+            if jump <= 0:
+                return False
+            jump -= 1
+            jump = max(jump, n)
+        return True
 
 
 if os.environ.get("SOLVING_LOCALLY"):
     sol = Solution()
-    ans = sol.canJump([1, 2])
+    ans = sol.canJump([3, 2, 1, 0, 4])
     print(ans)
