@@ -1,3 +1,4 @@
+mod prob_string-compression;
 mod prob_course-schedule;
 mod prob_maximize-distance-to-closest-person;
 mod prob_spiral-matrix;
