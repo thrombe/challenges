@@ -1,3 +1,4 @@
+mod prob_maximize-distance-to-closest-person;
 mod prob_spiral-matrix;
 mod prob_magnetic-force-between-two-balls;
 mod prob_happy-number;
