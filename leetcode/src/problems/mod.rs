@@ -1,3 +1,4 @@
+mod prob_magnetic-force-between-two-balls;
 mod prob_happy-number;
 mod prob_distribute-candies-among-children-ii;
 mod prob_find-eventual-safe-states;
