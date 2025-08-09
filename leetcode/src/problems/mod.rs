@@ -1,3 +1,4 @@
+mod prob_sudoku-solver;
 mod prob_find-the-duplicate-number;
 mod prob_string-compression;
 mod prob_course-schedule;
